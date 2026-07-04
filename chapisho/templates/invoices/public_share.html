@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="sw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ invoice.get_document_type_display }} {{ invoice.number }}</title>
+  <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+  <style>
+    .public-only { display: block; }
+    .invoice-detail { max-width: 800px; margin: 2rem auto; padding: 2rem; border: 1px solid var(--border-color); border-radius: 8px; }
+    .public-header { text-align: center; margin-bottom: 2rem; }
+  </style>
+</head>
+<body>
+  <div class="invoice-detail">
+    <div class="public-header">
+      <h1>{{ invoice.get_document_type_display }}</h1>
+      <p><strong>Namba:</strong> {{ invoice.number }}</p>
+    </div>
+
+    <div class="invoice-meta">
+      <p><strong>Tarehe:</strong> {{ invoice.issue_date|date:"d/m/Y" }}</p>
+      <p><strong>Mteja:</strong> {{ invoice.customer.name }}</p>
+    </div>
+
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Maelezo</th>
+            <th>Idadi</th>
+            <th>Bei</th>
+            <th>Jumla</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in invoice.items.all %}
+          <tr>
+            <td>{{ item.description }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>TZS {{ item.unit_price|floatformat:0 }}</td>
+            <td>TZS {{ item.line_total|floatformat:0 }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="totals">
+      <div class="total-row"><span>Jumla Ndogo</span><span>TZS {{ invoice.subtotal|floatformat:0 }}</span></div>
+      {% if invoice.vat_enabled %}
+      <div class="total-row"><span>VAT ({{ invoice.vat_percent }}%)</span><span>TZS {{ invoice.vat_amount|floatformat:0 }}</span></div>
+      {% endif %}
+      <div class="total-row grand-total"><span>Jumla</span><span>TZS {{ invoice.grand_total|floatformat:0 }}</span></div>
+    </div>
+
+    <div class="public-actions" style="text-align:center;margin-top:2rem;">
+      <button onclick="window.print()" class="btn btn-secondary">Chapisha / Pakua</button>
+    </div>
+  </div>
+</body>
+</html>

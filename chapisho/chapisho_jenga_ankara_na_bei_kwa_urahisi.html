@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapisho — Jenga Ankara na Bei kwa Urahisi</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        /* --- VISUAL DESIGN SYSTEM (Pure Black & White, System-Aware) --- */
+        :root {
+            --bg-color: #FFFFFF;
+            --surface-color: #FFFFFF;
+            --border-color: #E5E5E5;
+            --border-focus: #0A0A0A;
+            --text-primary: #0A0A0A;
+            --text-secondary: #5C5C5C;
+            --btn-primary-bg: #0A0A0A;
+            --btn-primary-text: #FFFFFF;
+            --btn-secondary-bg: #FFFFFF;
+            --btn-secondary-hover: #F5F5F5;
+            --divider-color: #E0E0E0;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            --radius: 8px;
+            --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #0A0A0A;
+                --surface-color: #141414;
+                --border-color: #2A2A2A;
+                --border-focus: #FAFAFA;
+                --text-primary: #FAFAFA;
+                --text-secondary: #A0A0A0;
+                --btn-primary-bg: #FAFAFA;
+                --btn-primary-text: #0A0A0A;
+                --btn-secondary-bg: #141414;
+                --btn-secondary-hover: #262626;
+                --divider-color: #262626;
+            }
+        }
+
+        /* --- BASE STYLES --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            letter-spacing: -0.01em;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.5;
+            font-size: 15px;
+            padding-bottom: 120px; /* Space for mobile sticky action bar */
+        }
+
+        /* --- CONTAINER & LAYOUT --- */
+        .app-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0 24px 0;
+            border-bottom: 1px solid var(--divider-color);
+            margin-bottom: 24px;
+        }
+
+        header h1 {
+            font-size: 24px;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        header p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 32px;
+        }
+
+        @media (min-width: 1025px) {
+            .main-grid {
+                grid-template-columns: 1.1fr 0.9fr;
+                align-items: start;
+            }
+            .preview-sticky {
+                position: sticky;
+                top: 24px;
+            }
+            body {
+                padding-bottom: 40px;
+            }
+        }
+
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h2 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="tel"],
+        input[type="email"],
+        input[type="date"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            background-color: var(--surface-color);
+            color: var(--text-primary);
+            border-radius: var(--radius);
+            font-size: 14px;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
+            outline: none;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 1px var(--border-focus);
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        input[readonly] {
+            background-color: var(--divider-color);
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        /* --- CARDS & SECTIONS --- */
+        .form-section {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .grid-columns {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        @media (min-width: 481px) {
+            .grid-columns {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        /* --- BUTTONS --- */
+        button, .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: var(--radius);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: var(--btn-primary-bg);
+            color: var(--btn-primary-text);
+            border-color: var(--btn-primary-bg);
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .btn-secondary {
+            background-color: var(--btn-secondary-bg);
+            color: var(--text-primary);
+            border-color: var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--btn-secondary-hover);
+        }
+
+        .btn-danger {
+            background-color: transparent;
+            color: var(--text-primary);
+            border-color: var(--border-color);
+        }
+
+        .btn-danger:hover {
+            background-color: var(--btn-secondary-hover);
+            border-color: var(--text-primary);
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        /* --- SCREEN B: DOCUMENT SELECTOR --- */
+        .doc-selector {
+            display: flex;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .doc-selector label {
+            flex: 1;
+            margin-bottom: 0;
+            text-align: center;
+            padding: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .doc-selector input[type="radio"] {
+            display: none;
+        }
+
+        .doc-selector input[type="radio"]:checked + label {
+            background-color: var(--text-primary);
+            color: var(--bg-color);
+        }
+
+        /* --- SCREEN C: LOGO UPLOAD --- */
+        .logo-uploader {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 8px;
+        }
+
+        .logo-thumbnail {
+            width: 64px;
+            height: 64px;
+            border: 1px dashed var(--border-color);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: var(--text-secondary);
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .logo-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input-wrapper input[type="file"] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* --- SCREEN F: DYNAMIC LINE ITEMS TABLE --- */
+        .items-header {
+            display: none;
+            grid-template-columns: 3.5fr 1fr 1.5fr 1.5fr 0.5fr;
+            gap: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--divider-color);
+            margin-bottom: 12px;
+        }
+
+        .items-header div {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        @media (min-width: 600px) {
+            .items-header {
+                display: grid;
+            }
+        }
+
+        .item-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            margin-bottom: 12px;
+            background-color: var(--bg-color);
+            position: relative;
+        }
+
+        @media (min-width: 600px) {
+            .item-row {
+                grid-template-columns: 3.5fr 1fr 1.5fr 1.5fr 0.5fr;
+                gap: 12px;
+                padding: 0;
+                border: none;
+                border-radius: 0;
+                margin-bottom: 8px;
+                align-items: center;
+                background-color: transparent;
+            }
+            .item-row label {
+                display: none; /* Hide labels since table header is visible */
+            }
+        }
+
+        .row-total-display {
+            font-family: var(--font-mono);
+            font-weight: 700;
+            text-align: right;
+            padding: 10px 0;
+            font-size: 14px;
+        }
+
+        @media (max-width: 599px) {
+            .row-total-display {
+                text-align: left;
+                border-top: 1px dashed var(--border-color);
+                margin-top: 4px;
+                padding-top: 8px;
+            }
+            .row-total-display::before {
+                content: "Jumla: ";
+                font-weight: 600;
+                color: var(--text-secondary);
+            }
+        }
+
+        /* --- SCREEN G: TOTALS SUMMARY --- */
+        .totals-block {
+            margin-top: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-end;
+            border-top: 1px solid var(--divider-color);
+            padding-top: 16px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 320px;
+            font-size: 14px;
+        }
+
+        .summary-row.grand-total {
+            font-size: 18px;
+            font-weight: 800;
+            border-top: 2px solid var(--text-primary);
+            padding-top: 12px;
+            margin-top: 4px;
+        }
+
+        .summary-row span:last-child {
+            font-family: var(--font-mono);
+            font-weight: 700;
+        }
+
+        .vat-toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .vat-toggle-container input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        /* --- SCREEN I: LIVE PREVIEW PANE --- */
+        .preview-pane {
+            background-color: #FFFFFF; /* Hardcoded white for perfect paper design contrast */
+            color: #0A0A0A; /* Hardcoded black */
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+        }
+
+        .preview-inner {
+            padding: 40px;
+            min-height: 800px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .preview-doc-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 40px;
+        }
+
+        .preview-logo-space {
+            max-width: 150px;
+            max-height: 60px;
+            margin-bottom: 12px;
+        }
+
+        .preview-logo-space img {
+            max-width: 100%;
+            max-height: 60px;
+            object-fit: contain;
+        }
+
+        .preview-meta-table {
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        .preview-meta-table td {
+            padding: 3px 0;
+        }
+
+        .preview-meta-table td:first-child {
+            color: #5C5C5C;
+            font-weight: 600;
+            padding-right: 16px;
+        }
+
+        .preview-meta-table td:last-child {
+            font-family: var(--font-mono);
+            font-weight: 700;
+        }
+
+        .preview-title {
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+            line-height: 1;
+        }
+
+        .preview-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin-bottom: 40px;
+            font-size: 13px;
+        }
+
+        .preview-split-title {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #5C5C5C;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid #E0E0E0;
+            padding-bottom: 4px;
+            margin-bottom: 8px;
+        }
+
+        .preview-address-block {
+            line-height: 1.4;
+            white-space: pre-wrap;
+        }
+
+        .preview-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-bottom: 30px;
+        }
+
+        .preview-table th {
+            border-bottom: 2px solid #0A0A0A;
+            padding: 10px 8px;
+            font-weight: 700;
+            text-align: left;
+            text-transform: uppercase;
+            font-size: 11px;
+            color: #5C5C5C;
+        }
+
+        .preview-table td {
+            border-bottom: 1px solid #E0E0E0;
+            padding: 12px 8px;
+            vertical-align: top;
+        }
+
+        .preview-table td.num, .preview-table th.num {
+            text-align: right;
+            font-family: var(--font-mono);
+        }
+
+        .preview-totals-table {
+            width: 280px;
+            margin-left: auto;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-bottom: 40px;
+        }
+
+        .preview-totals-table td {
+            padding: 6px 8px;
+        }
+
+        .preview-totals-table td:last-child {
+            text-align: right;
+            font-family: var(--font-mono);
+            font-weight: 700;
+        }
+
+        .preview-totals-table tr.total-highlight td {
+            border-top: 1.5px solid #0A0A0A;
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .preview-notes-section {
+            font-size: 12px;
+            color: #5C5C5C;
+            border-top: 1px dashed #E0E0E0;
+            padding-top: 16px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+
+        .preview-brand-tag {
+            text-align: center;
+            font-size: 11px;
+            color: #A0A0A0;
+            margin-top: 48px;
+            border-top: 1px solid #F0F0F0;
+            padding-top: 16px;
+        }
+
+        /* --- SCREEN K: EMPTY/VALIDATION STATES --- */
+        .validation-error-border {
+            border: 2px solid #0A0A0A !important; /* Bold black border for dark/light contrast errors */
+        }
+
+        .validation-error-text {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .empty-table-warning {
+            padding: 16px;
+            border: 1px dashed var(--border-color);
+            border-radius: var(--radius);
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        /* --- STICKY FOOTER ACTIONS (Mobile) --- */
+        .mobile-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+
+        .mobile-tab-btn {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            font-weight: 700;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .mobile-tab-btn.active {
+            border-bottom-color: var(--text-primary);
+            color: var(--text-primary);
+        }
+
+        .sticky-action-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--surface-color);
+            border-top: 1px solid var(--border-color);
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+            z-index: 999;
+        }
+
+        .sticky-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .sticky-buttons button {
+            flex: 1;
+        }
+
+        .action-subtext {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        /* Responsive layout handling */
+        @media (min-width: 1025px) {
+            .mobile-tabs {
+                display: none;
+            }
+            .sticky-action-bar {
+                display: none;
+            }
+            .desktop-actions-panel {
+                display: block;
+                margin-top: 24px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .desktop-actions-panel {
+                display: none;
+            }
+            /* Toggle visibility on mobile according to chosen tab */
+            .tab-content {
+                display: none;
+            }
+            .tab-content.active {
+                display: block;
+            }
+        }
+
+        /* --- PRINT STYLES (Vector PDF Generation) --- */
+        @media print {
+            body {
+                background-color: #FFFFFF !important;
+                color: #000000 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .app-container, header, .form-wrapper, .mobile-tabs, .sticky-action-bar, .desktop-actions-panel, button {
+                display: none !important;
+            }
+            .preview-pane {
+                display: block !important;
+                border: none !important;
+                box-shadow: none !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background-color: #FFFFFF !important;
+                color: #000000 !important;
+            }
+            .preview-inner {
+                padding: 0 !important;
+                min-height: auto !important;
+            }
+            @page {
+                size: A4;
+                margin: 20mm;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- Header -->
+        <header>
+            <div>
+                <h1>Chapisho</h1>
+                <p>Tengeneza Ankara Bila Malipo</p>
+            </div>
+            <button class="btn btn-secondary" onclick="confirmReset()" title="Futa kazi yote na uanze upya">Anza Upya</button>
+        </header>
+
+        <!-- Mobile view switcher -->
+        <div class="mobile-tabs">
+            <div class="mobile-tab-btn active" id="btn-tab-form" onclick="switchMobileTab('form')">Hariri Ankara</div>
+            <div class="mobile-tab-btn" id="btn-tab-preview" onclick="switchMobileTab('preview')">Hakiki Hati</div>
+        </div>
+
+        <div class="main-grid">
+            
+            <!-- LEFT COLUMN: Form Editor Wrapper -->
+            <div class="form-wrapper tab-content active" id="mobile-tab-form-content">
+                
+                <!-- Screen B: Document Type -->
+                <div class="doc-selector">
+                    <input type="radio" id="doc-type-ankara" name="doc-type" value="Ankara" checked onchange="handleDocTypeChange()">
+                    <label for="doc-type-ankara">Ankara (Invoice)</label>
+
+                    <input type="radio" id="doc-type-quote" name="doc-type" value="Bei-Kadirio" onchange="handleDocTypeChange()">
+                    <label for="doc-type-quote">Bei-Kadirio (Quote)</label>
+                </div>
+
+                <!-- Screen C: My Info -->
+                <div class="form-section">
+                    <h2>Taarifa Zangu (Muuzaji)</h2>
+                    
+                    <div class="form-group">
+                        <label for="my-name">Jina la Biashara au Jina Lako <span>*</span></label>
+                        <input type="text" id="my-name" placeholder="Mf. Kipaji Tech & Construction" oninput="updateCalculations()">
+                        <div class="validation-error-text" id="err-my-name" style="display:none;">⚠ Tafadhali jaza jina la biashara yako.</div>
+                    </div>
+
+                    <div class="grid-columns">
+                        <div class="form-group">
+                            <label for="my-phone">Nambari ya Simu <span>*</span></label>
+                            <input type="tel" id="my-phone" placeholder="Mf. 0712345678" oninput="updateCalculations()">
+                            <div class="validation-error-text" id="err-my-phone" style="display:none;">⚠ Tafadhali jaza namba yako ya simu.</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="my-email">Barua Pepe (Email)</label>
+                            <input type="email" id="my-email" placeholder="Mf. info@kipaji.co.tz" oninput="updateCalculations()">
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 16px;">
+                        <label for="my-address">Anwani ya Makazi</label>
+                        <textarea id="my-address" rows="2" placeholder="Mf. Ghorofa ya 3, Jengo la Samora, Posta, Dar es Salaam" oninput="updateCalculations()"></textarea>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 16px;">
+                        <label>Nembo ya Biashara</label>
+                        <div class="logo-uploader">
+                            <div class="logo-thumbnail" id="logo-preview-box">
+                                <span>Hakuna</span>
+                            </div>
+                            <div style="display: flex; gap: 8px; flex-direction: column;">
+                                <div class="file-input-wrapper">
+                                    <button class="btn btn-secondary" type="button">Weka Nembo</button>
+                                    <input type="file" id="logo-upload-input" accept="image/*" onchange="processLogoUpload(event)">
+                                </div>
+                                <button class="btn btn-danger" id="btn-remove-logo" type="button" onclick="removeLogo()" style="display: none; padding: 6px 12px; font-size: 12px;">Futa Nembo</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Screen D: Customer Info -->
+                <div class="form-section">
+                    <h2>Taarifa za Mteja</h2>
+                    
+                    <div class="form-group">
+                        <label for="client-name">Jina la Mteja (Mtu au Kampuni) <span>*</span></label>
+                        <input type="text" id="client-name" placeholder="Mf. Bakhresa Group au Juma Hamisi" oninput="updateCalculations()">
+                        <div class="validation-error-text" id="err-client-name" style="display:none;">⚠ Tafadhali jaza jina la mteja wetu.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="client-phone">Nambari ya Simu ya Mteja <span>*</span></label>
+                        <input type="tel" id="client-phone" placeholder="Mf. 255712345678" oninput="updateCalculations()">
+                        <div class="validation-error-text" id="err-client-phone" style="display:none;">⚠ Tafadhali jaza nambari ya simu ya mteja.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="client-address">Anwani ya Mteja</label>
+                        <textarea id="client-address" rows="2" placeholder="Mf. Plot 14, Barabara ya Bagamoyo, Mikocheni B" oninput="updateCalculations()"></textarea>
+                    </div>
+                </div>
+
+                <!-- Screen E: Invoice Meta -->
+                <div class="form-section">
+                    <h2>Maelezo ya Hati</h2>
+                    
+                    <div class="grid-columns">
+                        <div class="form-group">
+                            <label for="doc-number">Nambari ya Hati</label>
+                            <input type="text" id="doc-number" oninput="updateCalculations()">
+                        </div>
+                        <div class="form-group">
+                            <label for="doc-currency">Sarafu ya Hati</label>
+                            <input type="text" id="doc-currency" value="TZS (Shilingi ya Tanzania)" readonly>
+                        </div>
+                    </div>
+
+                    <div class="grid-columns" style="margin-top: 16px;">
+                        <div class="form-group">
+                            <label for="date-issue">Tarehe ya Kutolewa</label>
+                            <input type="date" id="date-issue" onchange="updateCalculations()">
+                        </div>
+                        <div class="form-group">
+                            <label for="date-due" id="lbl-date-due">Tarehe ya Mwisho wa Malipo</label>
+                            <input type="date" id="date-due" onchange="updateCalculations()">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Screen F: Line Items -->
+                <div class="form-section">
+                    <h2>Bidhaa na Huduma</h2>
+                    
+                    <div class="items-header">
+                        <div>Maelezo</div>
+                        <div>Idadi</div>
+                        <div>Bei kwa Moja (TZS)</div>
+                        <div style="text-align: right;">Jumla Kuu</div>
+                        <div></div>
+                    </div>
+
+                    <div id="dynamic-items-container">
+                        <!-- Items inject dynamically here -->
+                    </div>
+
+                    <div id="empty-table-state" class="empty-table-warning" style="display: none;">
+                        Ongeza angalau bidhaa au huduma moja kabla ya kuendelea.
+                    </div>
+
+                    <button class="btn btn-secondary btn-full" onclick="addNewItemRow()">+ Ongeza Bidhaa/Huduma</button>
+                </div>
+
+                <!-- Screen G: Totals & Tax Settings -->
+                <div class="form-section">
+                    <h2>Kodi (VAT) na Punguzo</h2>
+                    
+                    <div class="vat-toggle-container">
+                        <input type="checkbox" id="vat-checkbox-toggle" checked onchange="updateCalculations()">
+                        <label for="vat-checkbox-toggle" style="margin-bottom:0;">Ongeza Kodi ya VAT ya Tanzania (18%)</label>
+                    </div>
+
+                    <div class="grid-columns">
+                        <div class="form-group">
+                            <label for="discount-input">Kiasi cha Punguzo</label>
+                            <input type="number" id="discount-input" value="0" min="0" oninput="updateCalculations()">
+                        </div>
+                        <div class="form-group">
+                            <label for="discount-type-select">Aina ya Punguzo</label>
+                            <select id="discount-type-select" onchange="updateCalculations()">
+                                <option value="FIXED">TZS (Kiasi Maalumu)</option>
+                                <option value="PERCENT">% (Asilimia)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Screen H: Additional Notes -->
+                <div class="form-section">
+                    <h2>Maelezo ya Ziada & Masharti ya Malipo</h2>
+                    <textarea id="additional-notes-input" rows="3" placeholder="Mf. Malipo yafanyike kupitia akaunti ya Benki au huduma za Simu..." oninput="updateCalculations()"></textarea>
+                </div>
+
+                <!-- Action controls panel (Desktop side) -->
+                <div class="desktop-actions-panel">
+                    <div class="grid-columns">
+                        <button class="btn btn-primary" onclick="triggerPDFExport()">⬇ Pakua PDF</button>
+                        <button class="btn btn-primary" onclick="triggerWhatsAppShare()">📤 Tuma kwa WhatsApp</button>
+                    </div>
+                    <div class="action-subtext" style="margin-top: 12px;">
+                        Tafadhali pakua kwanza nakala ya PDF kwenye kifaa chako, kisha WhatsApp itafunguka moja kwa moja ili uweze kumuambatanishia mteja faili hilo kirahisi.
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN: Live Preview Pane -->
+            <div class="preview-sticky tab-content" id="mobile-tab-preview-content">
+                <div class="preview-pane" id="printable-area-element">
+                    <div class="preview-inner">
+                        <div>
+                            <!-- Document Header -->
+                            <div class="preview-doc-header">
+                                <div>
+                                    <div class="preview-logo-space" id="p-logo-wrapper" style="display: none;">
+                                        <img id="p-logo-img" src="" alt="Nembo">
+                                    </div>
+                                    <div id="p-my-name" style="font-size: 16px; font-weight: 800; text-transform: uppercase;">MUUZAJI WA HUDUMA</div>
+                                    <div id="p-my-phone" style="font-size: 13px; color: #5C5C5C; margin-top: 2px;">Simu: --</div>
+                                    <div id="p-my-email" style="font-size: 13px; color: #5C5C5C;">Email: --</div>
+                                    <div id="p-my-address" class="preview-address-block" style="font-size: 13px; color: #5C5C5C; margin-top: 4px;">--</div>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div class="preview-title" id="p-doc-title">ANKARA</div>
+                                    <table class="preview-meta-table" style="margin-left: auto;">
+                                        <tr>
+                                            <td>Nambari:</td>
+                                            <td id="p-doc-number">--</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Tarehe:</td>
+                                            <td id="p-date-issue">--</td>
+                                        </tr>
+                                        <tr id="p-row-date-due">
+                                            <td id="p-lbl-date-due">Ilipewe Kabla:</td>
+                                            <td id="p-date-due">--</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Document Split Addresses -->
+                            <div class="preview-split">
+                                <div>
+                                    <div class="preview-split-title">Mteja</div>
+                                    <div id="p-client-name" style="font-weight: 700; font-size: 14px;">---</div>
+                                    <div id="p-client-phone" style="margin-top: 2px;">Simu: ---</div>
+                                    <div id="p-client-address" class="preview-address-block" style="margin-top: 4px; color: #5C5C5C;">---</div>
+                                </div>
+                                <div style="text-align: right;">
+                                    <!-- Keep structural alignment clean -->
+                                </div>
+                            </div>
+
+                            <!-- Table of Items -->
+                            <table class="preview-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 50%;">Maelezo</th>
+                                        <th class="num" style="width: 10%;">Idadi</th>
+                                        <th class="num" style="width: 20%;">Kimoja (TZS)</th>
+                                        <th class="num" style="width: 20%;">Jumla (TZS)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="p-items-tbody">
+                                    <!-- Items loaded dynamically -->
+                                </tbody>
+                            </table>
+
+                            <!-- Summary Totals -->
+                            <table class="preview-totals-table">
+                                <tr>
+                                    <td>Jumla Ndogo:</td>
+                                    <td id="p-subtotal">TZS 0</td>
+                                </tr>
+                                <tr id="p-discount-row" style="display: none;">
+                                    <td>Punguzo:</td>
+                                    <td id="p-discount">TZS 0</td>
+                                </tr>
+                                <tr id="p-vat-row">
+                                    <td>VAT (18%):</td>
+                                    <td id="p-vat">TZS 0</td>
+                                </tr>
+                                <tr class="total-highlight">
+                                    <td>Jumla Kuu:</td>
+                                    <td id="p-grand-total">TZS 0</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Footer notes -->
+                        <div>
+                            <div class="preview-notes-section" id="p-additional-notes">
+                                --
+                            </div>
+
+                            <div class="preview-brand-tag">
+                                Taarifa zako hazihifadhiwi popote — zinabaki kwenye kifaa chako pekee.<br>
+                                Imetengenezwa kwa Chapisho
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- STICKY ACTION BAR FOR MOBILE DEVICES -->
+    <div class="sticky-action-bar">
+        <div class="sticky-buttons">
+            <button class="btn btn-primary" onclick="triggerPDFExport()">⬇ Pakua PDF</button>
+            <button class="btn btn-primary" onclick="triggerWhatsAppShare()">📤 WhatsApp</button>
+        </div>
+        <div class="action-subtext">
+            Tutapakua PDF kwanza, kisha kufungua WhatsApp — ambatanisha faili hilo kwenye ujumbe.
+        </div>
+    </div>
+
+    <script>
+        // --- DATA STATE ARCHITECTURE ---
+        let state = {
+            docType: 'Ankara', // 'Ankara' au 'Bei-Kadirio'
+            myName: '',
+            myPhone: '',
+            myEmail: '',
+            myAddress: '',
+            logoBase64: '',
+            clientName: '',
+            clientPhone: '',
+            clientAddress: '',
+            docNumber: '',
+            dateIssue: '',
+            dateDue: '',
+            vatEnabled: true,
+            discountValue: 0,
+            discountType: 'FIXED', // 'FIXED' au 'PERCENT'
+            additionalNotes: '',
+            items: [
+                { id: generateUniqueId(), description: 'Ushauri wa Kitaalamu (Consultancy)', qty: 1, price: 1500000 }
+            ]
+        };
+
+        // Initialize App on DOM Loaded
+        window.addEventListener('DOMContentLoaded', () => {
+            initializeDraft();
+            renderItemRows();
+            updateCalculations();
+        });
+
+        function generateUniqueId() {
+            return Date.now() + Math.random().toString(36).substr(2, 9);
+        }
+
+        // --- CORE LOGIC & AUTOSAVE ---
+        function initializeDraft() {
+            // Load from localStorage if present
+            const draft = localStorage.getItem('chapisho_draft');
+            if (draft) {
+                try {
+                    const parsed = JSON.parse(draft);
+                    state = { ...state, ...parsed };
+                } catch (e) {
+                    console.error("Draft parsing failed, resetting defaults.", e);
+                }
+            } else {
+                // Pre-populate defaults on absolute first launch
+                const today = new Date();
+                const due = new Date();
+                due.setDate(today.getDate() + 14);
+
+                state.dateIssue = today.toISOString().split('T')[0];
+                state.dateDue = due.toISOString().split('T')[0];
+                state.docNumber = generateDefaultDocNumber(state.docType);
+                state.additionalNotes = "Asante kwa kufanya biashara nasi. Malipo yote yafanyike ndani ya siku zilizopangwa kwenye ankara hii.";
+            }
+
+            // Sync structural inputs with current data model states
+            document.getElementById('doc-type-ankara').checked = state.docType === 'Ankara';
+            document.getElementById('doc-type-quote').checked = state.docType === 'Bei-Kadirio';
+            
+            document.getElementById('my-name').value = state.myName;
+            document.getElementById('my-phone').value = state.myPhone;
+            document.getElementById('my-email').value = state.myEmail;
+            document.getElementById('my-address').value = state.myAddress;
+
+            if (state.logoBase64) {
+                const thumb = document.getElementById('logo-preview-box');
+                thumb.style.backgroundImage = `url(${state.logoBase64})`;
+                thumb.innerHTML = '';
+                document.getElementById('btn-remove-logo').style.display = 'inline-flex';
+            }
+
+            document.getElementById('client-name').value = state.clientName;
+            document.getElementById('client-phone').value = state.clientPhone;
+            document.getElementById('client-address').value = state.clientAddress;
+
+            document.getElementById('doc-number').value = state.docNumber;
+            document.getElementById('date-issue').value = state.dateIssue;
+            document.getElementById('date-due').value = state.dateDue;
+
+            document.getElementById('vat-checkbox-toggle').checked = state.vatEnabled;
+            document.getElementById('discount-input').value = state.discountValue;
+            document.getElementById('discount-type-select').value = state.discountType;
+            document.getElementById('additional-notes-input').value = state.additionalNotes;
+
+            handleDocTypeChangeLabels();
+        }
+
+        function generateDefaultDocNumber(type) {
+            const prefix = type === 'Ankara' ? 'INV' : 'KAD';
+            const year = new Date().getFullYear();
+            
+            // Fetch running counter sequence locally
+            let counter = parseInt(localStorage.getItem('chapisho_invoice_counter') || '1');
+            const padded = String(counter).padStart(4, '0');
+            return `${prefix}-${year}-${padded}`;
+        }
+
+        function saveState() {
+            localStorage.setItem('chapisho_draft', JSON.stringify(state));
+        }
+
+        function switchMobileTab(targetTab) {
+            const formBtn = document.getElementById('btn-tab-form');
+            const prevBtn = document.getElementById('btn-tab-preview');
+            const formContent = document.getElementById('mobile-tab-form-content');
+            const prevContent = document.getElementById('mobile-tab-preview-content');
+
+            if (targetTab === 'form') {
+                formBtn.classList.add('active');
+                prevBtn.classList.remove('active');
+                formContent.classList.add('active');
+                prevContent.classList.remove('active');
+            } else {
+                formBtn.classList.remove('active');
+                prevBtn.classList.add('active');
+                formContent.classList.remove('active');
+                prevContent.classList.add('active');
+            }
+        }
+
+        // --- LOGO UPLOAD DECODING ---
+        function processLogoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.size > 1024 * 1024) {
+                alert("Faili ni kubwa mno! Tafadhali weka nembo isiyozidi 1MB.");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64 = e.target.result;
+                state.logoBase64 = base64;
+                
+                const thumb = document.getElementById('logo-preview-box');
+                thumb.style.backgroundImage = `url(${base64})`;
+                thumb.innerHTML = '';
+                
+                document.getElementById('btn-remove-logo').style.display = 'inline-flex';
+                updateCalculations();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeLogo() {
+            state.logoBase64 = '';
+            const thumb = document.getElementById('logo-preview-box');
+            thumb.style.backgroundImage = 'none';
+            thumb.innerHTML = '<span>Hakuna</span>';
+            document.getElementById('btn-remove-logo').style.display = 'none';
+            document.getElementById('logo-upload-input').value = '';
+            updateCalculations();
+        }
+
+        // --- INTERACTION & CALCULATIONS ---
+        function handleDocTypeChange() {
+            const isAnkara = document.getElementById('doc-type-ankara').checked;
+            state.docType = isAnkara ? 'Ankara' : 'Bei-Kadirio';
+            
+            // Adjust invoice counter prefix safely
+            state.docNumber = generateDefaultDocNumber(state.docType);
+            document.getElementById('doc-number').value = state.docNumber;
+
+            // Pre-fill corresponding Swahili terms
+            if (state.docType === 'Bei-Kadirio') {
+                state.additionalNotes = "Bei hii ni ya makadirio pekee kulingana na mahitaji yako na inaweza kubadilika kulingana na soko au makubaliano.";
+            } else {
+                state.additionalNotes = "Asante kwa kufanya biashara nasi. Malipo yote yafanyike ndani ya siku zilizopangwa kwenye ankara hii.";
+            }
+            document.getElementById('additional-notes-input').value = state.additionalNotes;
+
+            handleDocTypeChangeLabels();
+            updateCalculations();
+        }
+
+        function handleDocTypeChangeLabels() {
+            const labelDue = document.getElementById('lbl-date-due');
+            const pLabelDue = document.getElementById('p-lbl-date-due');
+            const previewRowDue = document.getElementById('p-row-date-due');
+
+            if (state.docType === 'Bei-Kadirio') {
+                labelDue.innerText = "Mwisho wa Maisha ya Ofa";
+                pLabelDue.innerText = "Ofa Mwisho:";
+                previewRowDue.style.display = "table-row";
+            } else {
+                labelDue.innerText = "Tarehe ya Mwisho wa Malipo";
+                pLabelDue.innerText = "Ilipewe Kabla:";
+                previewRowDue.style.display = "table-row";
+            }
+        }
+
+        function addNewItemRow() {
+            state.items.push({
+                id: generateUniqueId(),
+                description: '',
+                qty: 1,
+                price: 0
+            });
+            renderItemRows();
+            updateCalculations();
+
+            // Focus description on the newly spawned item line
+            const inputs = document.querySelectorAll('.item-row-desc-input');
+            if (inputs.length > 0) {
+                inputs[inputs.length - 1].focus();
+            }
+        }
+
+        function removeItemRow(id) {
+            if (state.items.length <= 1) {
+                // Clear out the single row instead of completely deleting it
+                state.items = [{ id: generateUniqueId(), description: '', qty: 1, price: 0 }];
+            } else {
+                state.items = state.items.filter(item => item.id !== id);
+            }
+            renderItemRows();
+            updateCalculations();
+        }
+
+        function updateItemProperty(id, property, val) {
+            const item = state.items.find(i => i.id === id);
+            if (!item) return;
+
+            if (property === 'qty') {
+                item.qty = parseInt(val) || 0;
+            } else if (property === 'price') {
+                item.price = parseFloat(val) || 0;
+            } else {
+                item.description = val;
+            }
+
+            // Update row total display instantly inline
+            const rowTotalEl = document.getElementById(`line-total-${id}`);
+            if (rowTotalEl) {
+                const total = item.qty * item.price;
+                rowTotalEl.innerText = `TZS ${Math.round(total).toLocaleString('en-US')}`;
+            }
+
+            debouncedUpdateCalculations();
+        }
+
+        // Lightweight debounce helper
+        let debounceTimer;
+        function debouncedUpdateCalculations() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(updateCalculations, 150);
+        }
+
+        function renderItemRows() {
+            const container = document.getElementById('dynamic-items-container');
+            container.innerHTML = '';
+
+            const isLastRowEmptyRemovable = state.items.length === 1;
+
+            state.items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'item-row';
+                div.id = `row-${item.id}`;
+                div.innerHTML = `
+                    <div>
+                        <label>Maelezo ya Huduma/Bidhaa</label>
+                        <input type="text" class="item-row-desc-input" placeholder="Mf. Kutengeneza Tovuti" value="${item.description}" oninput="updateItemProperty('${item.id}', 'description', this.value)">
+                    </div>
+                    <div>
+                        <label>Idadi</label>
+                        <input type="number" min="1" placeholder="1" value="${item.qty}" oninput="updateItemProperty('${item.id}', 'qty', this.value)">
+                    </div>
+                    <div>
+                        <label>Bei kwa Moja (TZS)</label>
+                        <input type="number" min="0" placeholder="150000" value="${item.price}" oninput="updateItemProperty('${item.id}', 'price', this.value)">
+                    </div>
+                    <div class="row-total-display" id="line-total-${item.id}">
+                        TZS ${(item.qty * item.price).toLocaleString('en-US')}
+                    </div>
+                    <div style="text-align: right;">
+                        <button class="btn btn-danger btn-icon" type="button" onclick="removeItemRow('${item.id}')" title="Futa Bidhaa Hii" ${isLastRowEmptyRemovable ? 'disabled style="opacity: 0.3; cursor: not-allowed;"' : ''}>🗑</button>
+                    </div>
+                `;
+                
+                // Add keyboard navigation hook: hitting Enter on the last column input spawns another line
+                const priceInput = div.querySelector('input[type="number"][placeholder="150000"]');
+                priceInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        addNewItemRow();
+                    }
+                });
+
+                container.appendChild(div);
+            });
+        }
+
+        function updateCalculations() {
+            // Read standard input fields directly back to the state object
+            state.myName = document.getElementById('my-name').value;
+            state.myPhone = document.getElementById('my-phone').value;
+            state.myEmail = document.getElementById('my-email').value;
+            state.myAddress = document.getElementById('my-address').value;
+
+            state.clientName = document.getElementById('client-name').value;
+            state.clientPhone = document.getElementById('client-phone').value;
+            state.clientAddress = document.getElementById('client-address').value;
+
+            state.docNumber = document.getElementById('doc-number').value;
+            state.dateIssue = document.getElementById('date-issue').value;
+            state.dateDue = document.getElementById('date-due').value;
+
+            state.vatEnabled = document.getElementById('vat-checkbox-toggle').checked;
+            state.discountValue = parseFloat(document.getElementById('discount-input').value) || 0;
+            state.discountType = document.getElementById('discount-type-select').value;
+            state.additionalNotes = document.getElementById('additional-notes-input').value;
+
+            // Standard Math Logic Run
+            let subtotal = 0;
+            state.items.forEach(item => {
+                subtotal += (item.qty * item.price);
+            });
+
+            let discountAmount = 0;
+            if (state.discountType === 'PERCENT') {
+                discountAmount = subtotal * (state.discountValue / 100);
+            } else {
+                discountAmount = state.discountValue;
+            }
+
+            // Sanity bound check on discounts
+            if (discountAmount > subtotal) {
+                discountAmount = subtotal;
+            }
+
+            const vatBase = subtotal - discountAmount;
+            const vatAmount = state.vatEnabled ? (vatBase * 0.18) : 0;
+            const grandTotal = vatBase + vatAmount;
+
+            // --- LIVE UPDATE PREVIEW CARD ---
+            document.getElementById('p-doc-title').innerText = state.docType === 'Ankara' ? 'ANKARA' : 'BEI-KADIRIO';
+            document.getElementById('p-doc-number').innerText = state.docNumber || '---';
+            
+            // Format dates
+            document.getElementById('p-date-issue').innerText = state.dateIssue ? formatDateString(state.dateIssue) : '--';
+            document.getElementById('p-date-due').innerText = state.dateDue ? formatDateString(state.dateDue) : '--';
+
+            // Logo Wrapper Render
+            const logoWrapper = document.getElementById('p-logo-wrapper');
+            const logoImg = document.getElementById('p-logo-img');
+            if (state.logoBase64) {
+                logoImg.src = state.logoBase64;
+                logoWrapper.style.display = 'block';
+            } else {
+                logoWrapper.style.display = 'none';
+            }
+
+            // My Business Info
+            document.getElementById('p-my-name').innerText = state.myName || 'JINA LA BIASHARA YAKO';
+            document.getElementById('p-my-phone').innerText = state.myPhone ? `Simu: ${state.myPhone}` : 'Simu: --';
+            document.getElementById('p-my-email').innerText = state.myEmail ? `Email: ${state.myEmail}` : '';
+            document.getElementById('p-my-address').innerText = state.myAddress || '';
+
+            // Customer details
+            document.getElementById('p-client-name').innerText = state.clientName || '---';
+            document.getElementById('p-client-phone').innerText = state.clientPhone ? `Simu: ${state.clientPhone}` : 'Simu: ---';
+            document.getElementById('p-client-address').innerText = state.clientAddress || '';
+
+            // Items Table Rows Rendering
+            const tbody = document.getElementById('p-items-tbody');
+            tbody.innerHTML = '';
+
+            const validItems = state.items.filter(item => item.description.trim() !== '');
+            const emptyTableWarning = document.getElementById('empty-table-state');
+
+            if (validItems.length === 0) {
+                emptyTableWarning.style.display = 'block';
+                // Put a mock empty row inside preview for visual cleanliness
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: #A0A0A0; padding: 20px;">Hakuna bidhaa iliyowekwa bado.</td>
+                    </tr>
+                `;
+            } else {
+                emptyTableWarning.style.display = 'none';
+                validItems.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${item.description}</td>
+                        <td class="num">${item.qty}</td>
+                        <td class="num">${Math.round(item.price).toLocaleString('en-US')}</td>
+                        <td class="num">${Math.round(item.qty * item.price).toLocaleString('en-US')}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            // Render Totals
+            document.getElementById('p-subtotal').innerText = `TZS ${Math.round(subtotal).toLocaleString('en-US')}`;
+            
+            const pDiscountRow = document.getElementById('p-discount-row');
+            if (discountAmount > 0) {
+                pDiscountRow.style.display = 'table-row';
+                document.getElementById('p-discount').innerText = `- TZS ${Math.round(discountAmount).toLocaleString('en-US')}`;
+            } else {
+                pDiscountRow.style.display = 'none';
+            }
+
+            const pVatRow = document.getElementById('p-vat-row');
+            if (state.vatEnabled) {
+                pVatRow.style.display = 'table-row';
+                document.getElementById('p-vat').innerText = `TZS ${Math.round(vatAmount).toLocaleString('en-US')}`;
+            } else {
+                pVatRow.style.display = 'none';
+            }
+
+            document.getElementById('p-grand-total').innerText = `TZS ${Math.round(grandTotal).toLocaleString('en-US')}`;
+
+            // Notes Section prefill
+            document.getElementById('p-additional-notes').innerText = state.additionalNotes || 'Hakuna maelezo ya ziada yaliyowekwa.';
+
+            // Autosave local state
+            saveState();
+        }
+
+        function formatDateString(dateStr) {
+            try {
+                const date = new Date(dateStr);
+                if (isNaN(date.getTime())) return dateStr;
+                return date.toLocaleDateString('sw-TZ', { year: 'numeric', month: 'short', day: 'numeric' });
+            } catch (e) {
+                return dateStr;
+            }
+        }
+
+        // --- VALIDATION AND ACTION PROCESSING ---
+        function runValidation() {
+            let isValid = true;
+
+            const fields = [
+                { id: 'my-name', errorId: 'err-my-name' },
+                { id: 'my-phone', errorId: 'err-my-phone' },
+                { id: 'client-name', errorId: 'err-client-name' },
+                { id: 'client-phone', errorId: 'err-client-phone' }
+            ];
+
+            fields.forEach(field => {
+                const el = document.getElementById(field.id);
+                const errEl = document.getElementById(field.errorId);
+                if (!el.value.trim()) {
+                    el.classList.add('validation-error-border');
+                    errEl.style.display = 'flex';
+                    isValid = false;
+                } else {
+                    el.classList.remove('validation-error-border');
+                    errEl.style.display = 'none';
+                }
+            });
+
+            const validItemsCount = state.items.filter(item => item.description.trim() !== '').length;
+            if (validItemsCount === 0) {
+                isValid = false;
+                alert("Tafadhali ongeza angalau bidhaa/huduma moja yenye maelezo kabla ya kuendelea.");
+            }
+
+            return isValid;
+        }
+
+        function triggerPDFExport() {
+            if (!runValidation()) {
+                switchMobileTab('form');
+                return;
+            }
+            generatePDFDownload();
+        }
+
+        function generatePDFDownload(callback) {
+            const element = document.getElementById('printable-area-element');
+            const filename = `${state.docNumber || 'ankara'}.pdf`;
+
+            const opt = {
+                margin:        [10, 10, 10, 10],
+                filename:      filename,
+                image:         { type: 'jpeg', quality: 0.98 },
+                html2canvas:   { scale: 2, useCORS: true, letterRendering: true },
+                jsPDF:         { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            if (callback) {
+                html2pdf().set(opt).from(element).toPdf().get('pdf').then(function(pdf) {
+                    pdf.save(filename);
+                    callback();
+                });
+            } else {
+                html2pdf().set(opt).from(element).save();
+            }
+            incrementCounter();
+        }
+
+        function triggerWhatsAppShare() {
+            if (!runValidation()) {
+                switchMobileTab('form');
+                return;
+            }
+
+            if (typeof html2pdf === 'undefined') {
+                alert("Library inapakuliwa... tafadhali jaribu tena.");
+                return;
+            }
+
+            const subtotal = state.items.reduce((sum, item) => sum + (item.qty * item.price), 0);
+            let discountAmount = state.discountType === 'PERCENT' ? subtotal * (state.discountValue / 100) : state.discountValue;
+            if (discountAmount > subtotal) discountAmount = subtotal;
+            const vatBase = subtotal - discountAmount;
+            const vatAmount = state.vatEnabled ? (vatBase * 0.18) : 0;
+            const grandTotal = Math.round(vatBase + vatAmount);
+
+            let targetPhone = state.clientPhone.replace(/\D/g, '');
+            if (targetPhone.startsWith('0')) {
+                targetPhone = '255' + targetPhone.substring(1);
+            }
+
+            const docTerm = state.docType === 'Ankara' ? 'ankara' : 'bei-kadirio';
+            const template = `Habari ${state.clientName}, hii ni ${docTerm} yako namba ${state.docNumber} yenye jumla ya TZS ${grandTotal.toLocaleString('en-US')}. Tafadhali pakua faili la PDF lililoambatanishwa hapa.`;
+            const encodedText = encodeURIComponent(template);
+
+            generatePDFDownload(function() {
+                setTimeout(() => {
+                    const whatsappUrl = `https://wa.me/${targetPhone}?text=${encodedText}`;
+                    window.open(whatsappUrl, '_blank');
+                }, 500);
+            });
+        }
+
+        function incrementCounter() {
+            let current = parseInt(localStorage.getItem('chapisho_invoice_counter') || '1');
+            current++;
+            localStorage.setItem('chapisho_invoice_counter', current.toString());
+            
+            // Re-apply counter safely
+            state.docNumber = generateDefaultDocNumber(state.docType);
+            document.getElementById('doc-number').value = state.docNumber;
+            updateCalculations();
+        }
+
+        function confirmReset() {
+            if (confirm("Una uhakika unataka kufuta taarifa zote na kuanza upya? Kazi yako ya sasa haitahifadhiwa tena.")) {
+                localStorage.removeItem('chapisho_draft');
+                
+                // Keep the running numerical counter sequence to maintain billing history
+                const savedCounter = localStorage.getItem('chapisho_invoice_counter') || '1';
+
+                state = {
+                    docType: 'Ankara',
+                    myName: '',
+                    myPhone: '',
+                    myEmail: '',
+                    myAddress: '',
+                    logoBase64: '',
+                    clientName: '',
+                    clientPhone: '',
+                    clientAddress: '',
+                    docNumber: '',
+                    dateIssue: '',
+                    dateDue: '',
+                    vatEnabled: true,
+                    discountValue: 0,
+                    discountType: 'FIXED',
+                    additionalNotes: '',
+                    items: [
+                        { id: generateUniqueId(), description: '', qty: 1, price: 0 }
+                    ]
+                };
+
+                const today = new Date();
+                const due = new Date();
+                due.setDate(today.getDate() + 14);
+
+                state.dateIssue = today.toISOString().split('T')[0];
+                state.dateDue = due.toISOString().split('T')[0];
+                state.docNumber = generateDefaultDocNumber(state.docType);
+                state.additionalNotes = "Asante kwa kufanya biashara nasi. Malipo yote yafanyike ndani ya siku zilizopangwa kwenye ankara hii.";
+
+                // Clear input values
+                removeLogo();
+                initializeDraft();
+                renderItemRows();
+                updateCalculations();
+                switchMobileTab('form');
+            }
+        }
+    </script>
+</body>
+</html>

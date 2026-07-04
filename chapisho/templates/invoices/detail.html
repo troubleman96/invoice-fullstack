@@ -1,0 +1,80 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}{{ invoice.number }}{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>{{ invoice.get_document_type_display }} {{ invoice.number }}</h1>
+  <div class="action-bar">
+    <a href="{% url 'invoice_pdf' invoice.id %}" class="btn btn-secondary">Pakua PDF</a>
+    <a href="{% url 'invoice_edit' invoice.id %}" class="btn btn-secondary">Hariri</a>
+    <a href="{% url 'invoice_delete' invoice.id %}" class="btn btn-danger">Futa</a>
+  </div>
+</div>
+
+<div class="invoice-detail">
+  <div class="invoice-meta">
+    <p><strong>Mteja:</strong> {{ invoice.customer.name }}</p>
+    <p><strong>Simu:</strong> {{ invoice.customer.phone }}</p>
+    <p><strong>Tarehe ya Kutolewa:</strong> {{ invoice.issue_date|date:"d/m/Y" }}</p>
+    <p><strong>Tarehe ya Kukamilisha:</strong> {{ invoice.due_date|date:"d/m/Y" }}</p>
+  </div>
+
+  <div class="table-responsive">
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th>Maelezo</th>
+          <th>Idadi</th>
+          <th>Bei</th>
+          <th>Jumla</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in invoice.items.all %}
+        <tr>
+          <td>{{ item.description }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>TZS {{ item.unit_price|floatformat:0 }}</td>
+          <td>TZS {{ item.line_total|floatformat:0 }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="totals">
+    <div class="total-row"><span>Jumla Ndogo</span><span>TZS {{ invoice.subtotal|floatformat:0 }}</span></div>
+    {% if invoice.vat_enabled %}
+    <div class="total-row"><span>VAT ({{ invoice.vat_percent }}%)</span><span>TZS {{ invoice.vat_amount|floatformat:0 }}</span></div>
+    {% endif %}
+    {% if invoice.discount_amount > 0 %}
+    <div class="total-row"><span>Punguzo</span><span>-TZS {{ invoice.discount_amount|floatformat:0 }}</span></div>
+    {% endif %}
+    <div class="total-row grand-total"><span>Jumla</span><span>TZS {{ invoice.grand_total|floatformat:0 }}</span></div>
+  </div>
+
+  {% if invoice.notes %}
+  <div class="invoice-notes">
+    <p><strong>Maelezo:</strong> {{ invoice.notes }}</p>
+  </div>
+  {% endif %}
+
+  <div class="invoice-status-control">
+    <h3>Badilisha Hali</h3>
+    <form method="post" action="{% url 'invoice_status' invoice.id %}">
+      {% csrf_token %}
+      <select name="status">
+        {% for val, label in invoice.STATUS_CHOICES %}
+        <option value="{{ val }}" {% if invoice.status == val %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="btn btn-small">Badilisha</button>
+    </form>
+  </div>
+
+  <div class="share-actions">
+    <a href="https://wa.me/{{ invoice.customer.phone|cut:'+' }}?text={{ 'Habari '|urlencode }}{{ invoice.customer.name|urlencode }}{{ ', angalia ankara yako namba '|urlencode }}{{ invoice.number|urlencode }}{{ ' hapa: '|urlencode }}{{ request.build_absolute_uri|cut:'/ankara/'|add:'/p/'|add:invoice.share_uuid|urlencode }}" target="_blank" class="btn btn-secondary">Tuma kwa WhatsApp</a>
+    <a href="{% url 'sms_send' %}?invoice={{ invoice.id }}&customer={{ invoice.customer.id }}&phone={{ invoice.customer.phone }}" class="btn btn-secondary">Tuma SMS</a>
+  </div>
+</div>
+{% endblock %}

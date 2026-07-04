@@ -1,0 +1,64 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Dashibodi{% endblock %}
+{% block content %}
+<div class="dashboard">
+  <div class="dashboard-header">
+    <h1>Dashibodi</h1>
+    <a href="{% url 'invoice_create' %}" class="btn btn-primary">+ Tengeneza Ankara Mpya</a>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <span class="kpi-value">{{ total_invoices_month }}</span>
+      <span class="kpi-label">Jumla ya Ankara Mwezi Huu</span>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-value">TZS {{ revenue_month|floatformat:0 }}</span>
+      <span class="kpi-label">Mapato ya Mwezi Huu</span>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-value">TZS {{ outstanding|floatformat:0 }}</span>
+      <span class="kpi-label">Ankara Zinazosubiri Malipo</span>
+    </div>
+    <div class="kpi-card">
+      <span class="kpi-value">{{ sms_sent }}</span>
+      <span class="kpi-label">SMS Zilizotumwa</span>
+    </div>
+  </div>
+
+  <section class="recent-invoices">
+    <h2>Ankara za Hivi Karibuni</h2>
+    {% if recent_invoices %}
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Namba</th>
+            <th>Mteja</th>
+            <th>Tarehe</th>
+            <th>Jumla</th>
+            <th>Hali</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for inv in recent_invoices %}
+          <tr>
+            <td>{{ inv.number }}</td>
+            <td>{{ inv.customer.name }}</td>
+            <td>{{ inv.issue_date|date:"d/m/Y" }}</td>
+            <td>TZS {{ inv.grand_total|floatformat:0 }}</td>
+            <td><span class="status-badge status-{{ inv.status }}">{{ inv.get_status_display }}</span></td>
+            <td><a href="{% url 'invoice_detail' inv.id %}" class="btn btn-small">Fungua</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p class="empty-state">Hakuna ankara bado. <a href="{% url 'invoice_create' %}">Tengeneza ankara yako ya kwanza</a>.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="form-page">
+  <h1>{{ title }}</h1>
+  <form method="post" class="standard-form">
+    {% csrf_token %}
+    {% for field in form %}
+    <div class="form-group">
+      {{ field.label_tag }}
+      {{ field }}
+      {% if field.errors %}
+      <div class="field-errors">{{ field.errors }}</div>
+      {% endif %}
+    </div>
+    {% endfor %}
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Hifadhi</button>
+      <a href="{% url 'customer_list' %}" class="btn btn-secondary">Ghairi</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

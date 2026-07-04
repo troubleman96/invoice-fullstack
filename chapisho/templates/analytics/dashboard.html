@@ -1,0 +1,59 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Takwimu{% endblock %}
+{% block content %}
+<div class="analytics-page">
+  <h1>Takwimu</h1>
+
+  <div class="date-range-filter">
+    <label for="monthsFilter">Kipindi:</label>
+    <select id="monthsFilter">
+      <option value="3">Miezi 3 iliyopita</option>
+      <option value="6">Miezi 6 iliyopita</option>
+      <option value="12" selected>Mwaka huu</option>
+    </select>
+  </div>
+
+  <section class="chart-section">
+    <h2>Mapato kwa Mwezi</h2>
+    <div class="chart-container">
+      <canvas id="revenueChart"></canvas>
+    </div>
+  </section>
+
+  <div class="chart-grid">
+    <section class="chart-section">
+      <h2>Ankara: Imelipwa dhidi ya Zinazosubiri</h2>
+      <div class="chart-container">
+        <canvas id="statusChart"></canvas>
+      </div>
+    </section>
+
+    <section class="chart-section">
+      <h2>Wateja Bora 5</h2>
+      <div class="chart-container">
+        <canvas id="topCustomersChart"></canvas>
+      </div>
+    </section>
+  </div>
+
+  <section class="chart-section">
+    <h2>Takwimu za SMS</h2>
+    <div id="smsStats" class="sms-stats-grid">
+      <div class="stat-card"><span class="stat-value" id="smsTotal">-</span><span class="stat-label">Jumla</span></div>
+      <div class="stat-card"><span class="stat-value" id="smssent">-</span><span class="stat-label">Zilizotumwa</span></div>
+      <div class="stat-card"><span class="stat-value" id="smsFailed">-</span><span class="stat-label">Zilizoshindikana</span></div>
+      <div class="stat-card"><span class="stat-value" id="smsSuccessRate">-</span><span class="stat-label">Kiwango cha Mafanikio</span></div>
+      <div class="stat-card"><span class="stat-value" id="smsCost">-</span><span class="stat-label">Gharama ya Jumla</span></div>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{% static 'js/charts.js' %}"></script>
+{% endblock %}

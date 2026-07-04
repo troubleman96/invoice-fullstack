@@ -1,0 +1,10 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}500 - Hitilafu ya Serva{% endblock %}
+{% block content %}
+<div class="empty-state">
+  <h1>500</h1>
+  <p>Hitilafu imetokea kwenye seva. Tafadhali jaribu tena baadaye.</p>
+  <a href="{% url 'dashboard' %}" class="btn btn-primary">Rudi Dashibodi</a>
+</div>
+{% endblock %}

@@ -1,0 +1,9 @@
+Django>=5.0,<6.0
+weasyprint
+africastalking
+python-decouple
+dj-database-url
+psycopg2-binary
+Pillow
+gunicorn
+whitenoise

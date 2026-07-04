@@ -1,0 +1,98 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Tuma SMS{% endblock %}
+{% block content %}
+<div class="sms-page">
+  <h1>Tuma SMS</h1>
+
+  {% if not api_key_configured %}
+  <div class="warning-banner">
+    <p>SMS haijawekwa — nenda <a href="{% url 'settings' %}">Mipangilio</a> kuweka kitambulisho cha mtumaji SMS.</p>
+  </div>
+  {% endif %}
+
+  <form method="post" class="sms-form" id="smsForm">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="phone">Namba ya Simu</label>
+      <input type="tel" name="phone" id="phone" value="{{ phone }}" required {% if not api_key_configured %}disabled{% endif %}>
+    </div>
+
+    <div class="form-group">
+      <label for="message">Ujumbe</label>
+      <textarea name="message" id="message" rows="5" {% if not api_key_configured %}disabled{% endif %}>{{ default_message }}</textarea>
+      <small class="char-counter">Sehemu 1 ya 160</small>
+    </div>
+
+    <button type="submit" class="btn btn-primary" {% if not api_key_configured %}disabled{% endif %} id="smsSendBtn">Tuma Sasa</button>
+  </form>
+
+  <div id="smsResult" style="display:none;" class="sms-result"></div>
+
+  {% if sms_history %}
+  <section class="sms-history">
+    <h2>Historia ya SMS</h2>
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Simu</th>
+            <th>Ujumbe</th>
+            <th>Hali</th>
+            <th>Muda</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for log in sms_history %}
+          <tr>
+            <td>{{ log.phone }}</td>
+            <td>{{ log.message|truncatechars:60 }}</td>
+            <td><span class="status-badge status-{% if log.status == 'sent' %}paid{% else %}draft{% endif %}">{{ log.get_status_display }}</span></td>
+            <td>{{ log.sent_at|date:"d/m/Y H:i" }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.getElementById('smsForm')?.addEventListener('submit', function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('smsSendBtn');
+  btn.disabled = true;
+  btn.textContent = 'Inatuma...';
+
+  const formData = new FormData(this);
+  fetch('{% url "sms_send" %}', {
+    method: 'POST',
+    body: formData,
+    headers: {'X-Requested-With': 'XMLHttpRequest'},
+  })
+  .then(r => r.json())
+  .then(data => {
+    const result = document.getElementById('smsResult');
+    result.style.display = 'block';
+    result.textContent = data.message;
+    result.className = 'sms-result ' + (data.status === 'sent' ? 'success' : 'error');
+    btn.disabled = false;
+    btn.textContent = 'Tuma Sasa';
+    setTimeout(() => { result.style.display = 'none'; }, 5000);
+  })
+  .catch(() => {
+    btn.disabled = false;
+    btn.textContent = 'Tuma Sasa';
+  });
+});
+
+document.getElementById('message')?.addEventListener('input', function() {
+  const len = this.value.length;
+  const segments = Math.ceil(len / 160) || 1;
+  document.querySelector('.char-counter').textContent = `Sehemu ${segments} ya 160`;
+});
+</script>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}404 - Kurasa Haipatikani{% endblock %}
+{% block content %}
+<div class="empty-state">
+  <h1>404</h1>
+  <p>Kurasa unayotafuta haipatikani.</p>
+  <a href="{% url 'dashboard' %}" class="btn btn-primary">Rudi Dashibodi</a>
+</div>
+{% endblock %}

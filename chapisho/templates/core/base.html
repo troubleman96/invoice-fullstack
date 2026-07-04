@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="sw">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapisho - {% block title %}Dashibodi{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/theme.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="{% url 'dashboard' %}" class="logo">Chapisho</a>
+      {% if user.is_authenticated %}
+      <nav class="main-nav">
+        <a href="{% url 'dashboard' %}">Dashibodi</a>
+        <a href="{% url 'invoice_list' %}">Ankara</a>
+        <a href="{% url 'customer_list' %}">Wateja</a>
+        <a href="{% url 'analytics_dashboard' %}">Takwimu</a>
+        <a href="{% url 'settings' %}">Mipangilio</a>
+        <a href="{% url 'logout' %}">Toka</a>
+      </nav>
+      <button class="nav-toggle" aria-label="Fungua menyu">☰</button>
+      {% endif %}
+    </div>
+  </header>
+
+  <main class="container main-content">
+    {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+      <div class="message {{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Taarifa za ankara zinahifadhiwa kwa usalama kwenye akaunti yako. Hazitolewi kwa mtu yeyote wa tatu isipokuwa kutuma SMS kwa mteja uliyemtaja.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelector('.nav-toggle')?.addEventListener('click', function() {
+      document.querySelector('.main-nav').classList.toggle('open');
+    });
+  </script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

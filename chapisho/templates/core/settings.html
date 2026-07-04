@@ -1,0 +1,34 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Mipangilio{% endblock %}
+{% block content %}
+<div class="settings-page">
+  <h1>Mipangilio</h1>
+
+  <div class="sms-status">
+    <strong>Hali ya SMS:</strong>
+    {% if sms_configured %}
+    <span class="status-badge status-paid">Imeunganishwa</span>
+    {% else %}
+    <span class="status-badge status-draft">Haijawekwa — weka Kitambulisho cha Mtumaji SMS</span>
+    {% endif %}
+  </div>
+
+  <form method="post" enctype="multipart/form-data" class="settings-form">
+    {% csrf_token %}
+    {% for field in form %}
+    <div class="form-group">
+      {{ field.label_tag }}
+      {{ field }}
+      {% if field.errors %}
+      <div class="field-errors">{{ field.errors }}</div>
+      {% endif %}
+      {% if field.help_text %}
+      <small class="help-text">{{ field.help_text }}</small>
+      {% endif %}
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Hifadhi</button>
+  </form>
+</div>
+{% endblock %}

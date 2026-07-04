@@ -1,0 +1,14 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Futa Ankara{% endblock %}
+{% block content %}
+<div class="confirm-delete">
+  <h1>Una uhakika unataka kufuta ankara hii?</h1>
+  <p><strong>{{ invoice.number }}</strong> — {{ invoice.customer.name }}</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Ndiyo, Futa</button>
+    <a href="{% url 'invoice_detail' invoice.id %}" class="btn btn-secondary">Ghairi</a>
+  </form>
+</div>
+{% endblock %}

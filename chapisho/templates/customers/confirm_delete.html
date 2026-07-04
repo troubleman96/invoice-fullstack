@@ -1,0 +1,15 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Futa Mteja{% endblock %}
+{% block content %}
+<div class="confirm-delete">
+  <h1>Una uhakika unataka kufuta mteja huyu?</h1>
+  <p><strong>{{ customer.name }}</strong> ({{ customer.phone }})</p>
+  <p class="warning">Ankara za mteja huyu hazitafutwa, lakini hazitaweza kuhusishwa na mteja tena.</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Ndiyo, Futa</button>
+    <a href="{% url 'customer_detail' customer.id %}" class="btn btn-secondary">Ghairi</a>
+  </form>
+</div>
+{% endblock %}
